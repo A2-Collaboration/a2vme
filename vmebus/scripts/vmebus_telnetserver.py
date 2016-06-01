@@ -2,26 +2,17 @@
 
 import socket, select, subprocess
 
+#need to think of a way of resricting commands that can be sent
 def process(data):
-    cmd = ""
-    msg = ""
-    array = data.split()
-    
-    if array[0] == "read":
-        cmd = "vmeext "+array[1]+" 0 r"
-        #msg = execute(cmd)
-    elif array[0] == "write":
-        if len(array) == 3:
-            hx = hex(int(array[2]))
-            cmd = "vmeext "+array[1]+" "+hx+" w"
-            #msg = execute(cmd)
-        else:
-            msg = "No selection"
-            cmd = msg*1 #for testing only
-    else:
-        msg = "Command not found"
-    return cmd #should be msg
-    
+	msg = ""
+	cmd = data
+	checkArray = cmd.split()
+	length = len(checkArray)
+	if (checkArray[0] == "/opt/a2vme/build/bin/vmeext") and (length == 4 or length == 5):
+		msg = execute(cmd)
+	else:
+		msg = "Invalid command"
+	return msg   
         
 def execute(cmd):
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
@@ -34,10 +25,10 @@ if __name__ == "__main__":
       
     CONNECTION_LIST = []    # list of socket clients
     RECV_BUFFER = 4096 # Advisable to keep it as an exponent of 2
-    PORT = 8888
+    PORT = 1337
          
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # this has no effect, why ?
+    # this has no effect, why?
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server_socket.bind(("0.0.0.0", PORT))
     server_socket.listen(10)
